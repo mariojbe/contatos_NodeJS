@@ -10,12 +10,14 @@ html
     link(rel='stylesheet', href="/css/bootstrap-aux.css")
   body
     div(class="container")
-      div(class="masthead")
-        h3(class="text-muted") Projeto TegraInfo
-        include partials/menu 
+      if isLogged
+        div(class="masthead")
+          h3(class="text-muted") Projeto TegraInfo
+          include partials/menu 
       block content
 
-      include partials/footer
+      if isLogged
+        include partials/footer
 
     script(src="/js/jquery.min.js")
     script(src="/js/bootstrap.min.js")
