@@ -1,4 +1,4 @@
-var validacao = require('../validacoes/amigos.js')
+var validacao = require('../validacoes/amigos.js');
 
 module.exports = function(app) {
 
@@ -13,7 +13,7 @@ module.exports = function(app) {
                         lista: null
                     });
                 }
-                res.render('amigos/render', {
+                res.render('amigos/index', {
                     lista: dados
                 });
             });
@@ -90,7 +90,7 @@ module.exports = function(app) {
             });
         },
 
-        upadate: function(req, res) {
+        update: function(req, res) {
             if (validacao(req, res)) {
                 Amigos.findById(req.params.id, function(err, dados) {
                     var model = dados;
