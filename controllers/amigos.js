@@ -1,15 +1,14 @@
-var validacao = require('../validacoes/amigos.js');
-
 module.exports = function(app) {
 
+    var validacao = require('../validacoes/amigos');
     var Amigos = app.models.amigos;
 
     var AmigoController = {
         index: function(req, res) {
             Amigos.find(function(err, dados) {
                 if (err) {
-                    req.flash('erro', 'Erro ao carregar: ' + err);
-                    res.render('amigos/index', {
+                    req.flash('erro', 'Erro ao buscar amigo: ' + err);
+                    res.redirect('amigos/index', {
                         lista: null
                     });
                 }
@@ -39,8 +38,17 @@ module.exports = function(app) {
                             model: model
                         });
                     } else {
-                        req.flash('info', 'Registro cadastrdo com sucesso');
-                        res.render('/amigos');
+                        model.save(function(err) {
+                            if (err) {
+                                req.flash('erro', 'Erro ao cadastrar: ' + err);
+                                res.render('amigos/create', {
+                                    model: model
+                                });
+                            } else {
+                                req.flash('info', 'Registro cadastrdo com sucesso');
+                                res.render('/amigos');
+                            }
+                        });
                     }
                 });
             } else {
@@ -53,12 +61,12 @@ module.exports = function(app) {
         show: function(req, res) {
             Amigos.findById(req.params.id, function(err, dados) {
                 if (err) {
-                    req.flash('erro', 'Erro ao carregar amigo: ' + err);
-                    res.render('/amigos');
+                    req.flash('erro', 'Erro ao visualizar o usuário: ' + err);
+                    res.redirect('/amigos');
                 } else {
                     res.render('amigos/show', {
                         model: dados
-                    });
+                    })
                 }
             });
         },
@@ -68,55 +76,48 @@ module.exports = function(app) {
                 _id: req.params.id
             }, function(err) {
                 if (err) {
-                    req.flash('erro', 'Erro ao excluir amigo: ' + err);
-                    res.render('/amigos');
+                    req.flash('erro', 'Erro ao excluir o amigo: ' + err);
+                    res.redirect('/amigos');
                 } else {
                     req.flash('info', 'Registro excluído com sucesso!');
-                    res.render('/amigos');
+                    res.redirect('/amigos');
                 }
             });
         },
 
         editar: function(req, res) {
-            Amigos.findById(req.params.id, function(err, dados) {
+            Amigos.findById(req.params.id, function(err, data) {
                 if (err) {
-                    req.flash('erro', 'Erro ao editar amigo: ' + err);
+                    req.flash('erro', 'Erro ao editar: ' + err);
                     res.redirect('/amigos');
                 } else {
                     res.render('amigos/edit', {
-                        model: dados
+                        model: data
                     });
                 }
             });
         },
 
         update: function(req, res) {
-            if (validacao(req, res)) {
-                Amigos.findById(req.params.id, function(err, dados) {
-                    var model = dados;
-                    model.nome = req.body.nome;
-                    model.email = req.body.email;
-                    model.save(function(err) {
-                        if (err) {
-                            req.flash('erro', 'Erro ao atualizar o registro! ' + err);
-                            res.render('amigos/edit', {
-                                model: model
-                            });
-                        } else {
-                            req.flash('info', 'Registro atualizado com sucesso');
-                            res.render('/amigos');
-                        }
-                    });
-                });
-            } else {
-                res.render('amigos/edit', {
-                    model: req.body
-                });
-            }
-        }
+            Amigos.findById(req.params.id, function(err, data) {
+                var model = data;
+                model.nome = req.body.nome;
+                model.email = req.body.email;
 
+                model.save(function(err) {
+                    if (err) {
+                        req.flash('erro', 'Erro ao editar: ' + err);
+                        res.render('amigos/edit', {
+                            dados: model
+                        });
+                    } else {
+                        req.flash('info', 'Registro atualizado com sucesso!');
+                        res.redirect('/amigos');
+                    }
+                });
+            });
+        }
     }
 
     return AmigoController;
-
 }
