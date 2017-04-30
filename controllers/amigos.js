@@ -8,7 +8,7 @@ module.exports = function(app) {
             Amigos.find(function(err, dados) {
                 if (err) {
                     req.flash('erro', 'Erro ao buscar amigo: ' + err);
-                    res.redirect('amigos/index', {
+                    res.render('amigos/index', {
                         lista: null
                     });
                 }
@@ -46,7 +46,7 @@ module.exports = function(app) {
                                 });
                             } else {
                                 req.flash('info', 'Registro cadastrdo com sucesso');
-                                res.render('/amigos');
+                                res.redirect('/amigos');
                             }
                         });
                     }

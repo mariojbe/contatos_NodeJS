@@ -5,7 +5,7 @@ module.exports = function() {
   var contatoSchema = mongoose.Schema({
     tipo: {
       type: String,
-      required: true,
+      required: false,
       trim: true
     },
     telefone: {
