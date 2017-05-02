@@ -1,7 +1,6 @@
-var validacao = require('../validacoes/contatos');
-
 module.exports = function(app) {
 
+    var validacao = require('../validacoes/contatos');
     var Amigo = app.models.amigos;
 
     var ContatoController = {
@@ -39,6 +38,23 @@ module.exports = function(app) {
                         req.flash('erro', 'Erro ao cadastrar contato: ' + err);
                     }
                     res.redirect('/contatos/' + _id);
+                });
+            });
+        },
+
+        excluir: function(req, res) {
+            var _id = req.params.amigo;
+            Amigo.findById(_id, function(err, dados) {
+                if (err) {
+                    res.json(400, 'Erro ao excluir contato: ' + err);
+                }
+                var contatoID = req.params.id;
+                dados.contatos.id(contatoID).remove();
+                dados.save(function(err) {
+                    if (err) {
+                        res.json(400, 'Erro ao excluir contato: ' + err);
+                    }
+                    res.json(200, 'Registro excluído com sucesso!');
                 });
             });
         }

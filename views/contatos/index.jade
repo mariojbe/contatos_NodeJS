@@ -28,7 +28,30 @@ block content
                         td #{valor.tipo}
                         td #{valor.telefone}
                         td
-                            a(href="/amigos/#{valor._id}", class="btn btn-danger")
+                            a(href="javascript: Excluir('#{valor._id}', ' #{id}'); ", class="btn btn-danger")
                                 span(class="glyphicon glyphicon-trash")
     else
         p Nenhum registro encontrado!
+    a(href="/amigos") Voltar
+
+block scripts
+    script(type="text/javascript").
+        function Excluir(contato, amigo) {
+            var pergunta = confirm('Você deseja realmente excluir o contato?');
+            if(pergunta){
+                $.ajax({
+                    url: '/contatos/delete/'+contato+'/'+amigo,
+                    dataType: 'json',
+                    type: 'POST',
+                    statusCode: {
+                        200: function(data){
+                            alert(data);
+                            window.location.reload();
+                        },
+                        400: function(data){
+                            alert(data);
+                        }
+                    }
+                });
+            }
+        }

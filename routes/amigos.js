@@ -1,18 +1,20 @@
-module.exports = function(app){
+var autenticar = require('../middleware/autenticar.js');
 
-  var amigo    = app.controllers.amigos;
+module.exports = function(app) {
 
-  app.route('/amigos').get(amigo.index);
+    var amigo = app.controllers.amigos;
 
-  app.route('/amigos/create')
-      .get(amigo.create)
-      .post(amigo.salvar);
+    app.route('/amigos').get(autenticar, amigo.index);
 
-  app.route('/amigos/show/:id').get(amigo.show);
-  app.route('/amigos/delete/:id').post(amigo.excluir);
+    app.route('/amigos/create')
+        .get(autenticar, amigo.create)
+        .post(amigo.salvar);
 
-  app.route('/amigos/edit/:id')
-      .get(amigo.editar)
-      .post(amigo.update);
+    app.route('/amigos/show/:id').get(autenticar, amigo.show);
+    app.route('/amigos/delete/:id').post(amigo.excluir);
+
+    app.route('/amigos/edit/:id')
+        .get(autenticar, amigo.editar)
+        .post(amigo.update);
 
 }
